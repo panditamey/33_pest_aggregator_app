@@ -1,3 +1,5 @@
+import datetime
+import math
 from django.views.decorators.csrf import csrf_exempt
 import time
 from    server.models import CropDatasetCategory
@@ -99,22 +101,23 @@ def AddSample(request):
             if rtrap == None or rleaf == None:
                 return JsonResponse({"success":0})
         except:
-        
+            current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+            
             pictureleaf = Image.fromarray(rleaf)  
             picturetrap = Image.fromarray(rtrap)
             try :  
                 image_path_leaf = f"./dataset/{qr}/leaf/"
-                os.makedirs(image_path_leaf)
+                os.makedirs(image_path_leaf,exist_ok=True)
                 # pictureleaf.resize(480,640)
-                pictureleaf.save(image_path_leaf+f"/{qr}.jpg","JPEG")
-                leafpath = image_path_leaf+f"/{qr}.jpg"
+                pictureleaf.save(image_path_leaf+f"/{qr}{current_datetime}.jpg","JPEG")
+                leafpath = image_path_leaf+f"/{qr}{current_datetime}.jpg"
                 print(leafpath)
                 # leaf.save(image_path_leaf+"/test.jpg","JPEG")
                 image_path_trap = f"./dataset/{qr}/trap/"
-                os.makedirs(image_path_trap)
+                os.makedirs(image_path_trap,exist_ok=True)
                 # picturetrap.resize(480,640)
-                picturetrap.save(image_path_trap+f"/{qr}.jpg","JPEG")
-                trappath = image_path_trap+f"/{qr}.jpg"
+                picturetrap.save(image_path_trap+f"/{qr}{current_datetime}.jpg","JPEG")
+                trappath = image_path_trap+f"/{qr}{current_datetime}.jpg"
                 print(trappath)
 
                 print(data.get("user"))

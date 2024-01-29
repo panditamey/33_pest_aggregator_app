@@ -5,6 +5,7 @@ import 'package:pest_app/AddRecordComponents/qr.dart';
 import 'package:pest_app/add_crop_category.dart';
 import 'package:pest_app/locationmap.dart';
 import 'package:dio/dio.dart';
+import 'package:pest_app/login.dart';
 import 'package:pest_app/model.dart';
 import 'package:pest_app/url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,6 +87,20 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.person),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+
+            prefs.setBool('userLoggedIn', false);
+            print(prefs.getBool('userLoggedIn'));
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Login()),
+            );
+          },
+        ),
         title: const Text(
           "Home",
           style: TextStyle(color: Colors.white),
