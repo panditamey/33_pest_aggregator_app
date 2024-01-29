@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pest_app/home.dart';
 import 'package:pest_app/url.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTrap extends StatefulWidget {
   AddTrap(
@@ -47,12 +49,19 @@ postData(qr, leaf, trap, crop) async {
   //     'trap', File(trap).readAsBytesSync(),
   //     filename: trap.split("/").last));
   final dio = Dio();
-
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await Geolocator.requestPermission();
+  Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high);
+  print(position.latitude + position.longitude);
   final formData = FormData.fromMap({
     'qr': qr,
     'crop': crop,
     'leaf': await MultipartFile.fromBytes(leafContent, filename: 'image.jpg'),
     'trap': await MultipartFile.fromBytes(trapContent, filename: 'trap.jpg'),
+    'user': prefs.getString('username'),
+    'latitude': position.latitude ?? 0,
+    'longitude': position.longitude ?? 0
   });
   final response = await dio.post(url + '/api/addsample/', data: formData);
 
@@ -145,6 +154,20 @@ class _AddTrapState extends State<AddTrap> {
                                   isPosted = true;
                                 });
 
+                                //new change
+                                Fluttertoast.showToast(
+                                  msg: "Uploaded Successfully ✅",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Home()),
+                                );
                                 var res = await postData(
                                     widget.qr, widget.leaf, image, widget.crop);
                                 res.data["success"] == 1
@@ -166,11 +189,11 @@ class _AddTrapState extends State<AddTrap> {
                                         textColor: Colors.white,
                                         fontSize: 16.0);
                                 print(res);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => Home()),
+                                // );
                               },
                               child: Text(
                                 'Upload',

@@ -37,6 +37,9 @@ class _LoginState extends State<Login> {
         textColor: Colors.white,
         fontSize: 16.0);
     if ((response.data["status"]) == 1) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      prefs.setString('username', email);
       print("Going to Home");
       Navigator.pushAndRemoveUntil(
         context,

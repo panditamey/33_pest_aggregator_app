@@ -103,28 +103,33 @@ def AddSample(request):
             pictureleaf = Image.fromarray(rleaf)  
             picturetrap = Image.fromarray(rtrap)
             try :  
-                # image_path_leaf = f"./dataset/{qr}/leaf/"
-                # os.makedirs(image_path_leaf)
-                # # pictureleaf.resize(480,640)
-                # pictureleaf.save(image_path_leaf+f"/{qr}.jpg","JPEG")
-                # leafpath = image_path_leaf+f"/{qr}.jpg"
-                # print(leafpath)
-                # # leaf.save(image_path_leaf+"/test.jpg","JPEG")
-                # image_path_trap = f"./dataset/{qr}/trap/"
-                # os.makedirs(image_path_trap)
-                # # picturetrap.resize(480,640)
-                # picturetrap.save(image_path_trap+f"/{qr}.jpg","JPEG")
-                # trappath = image_path_trap+f"/{qr}.jpg"
-                # print(trappath)
+                image_path_leaf = f"./dataset/{qr}/leaf/"
+                os.makedirs(image_path_leaf)
+                # pictureleaf.resize(480,640)
+                pictureleaf.save(image_path_leaf+f"/{qr}.jpg","JPEG")
+                leafpath = image_path_leaf+f"/{qr}.jpg"
+                print(leafpath)
+                # leaf.save(image_path_leaf+"/test.jpg","JPEG")
+                image_path_trap = f"./dataset/{qr}/trap/"
+                os.makedirs(image_path_trap)
+                # picturetrap.resize(480,640)
+                picturetrap.save(image_path_trap+f"/{qr}.jpg","JPEG")
+                trappath = image_path_trap+f"/{qr}.jpg"
+                print(trappath)
 
-                # dataToSave = DataSet(
-                #     qr = str(qr),
-                #     crop = str(crop),
-                #     pest_detected = str(pest_detected),
-                #     leaf = str(leafpath),
-                #     trap = str(trappath),
-                # )
-                # dataToSave.save()
+                print(data.get("user"))
+
+                dataToSave = DataSet(
+                    qr = str(qr),
+                    crop = str(crop),
+                    pest_detected = str(pest_detected),
+                    leaf = str(leafpath),
+                    trap = str(trappath),
+                    useremail = str(data.get("user")),
+                    latitude = float(data.get("latitude")),
+                    longitude = float(data.get("longitude"))
+                )
+                dataToSave.save()
                 print("Extracted")
 
             except:
@@ -133,6 +138,9 @@ def AddSample(request):
             # trap_name = default_storage.save(trap.name,trap)
             # trap_url = default_storage.path("pestserver/dataset/"+str(qr)+"/"+trap_name)
             # print(trap_url)
+
+            #save data to database
+            
 
 
             return JsonResponse(
